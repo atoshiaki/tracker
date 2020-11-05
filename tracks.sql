@@ -24,5 +24,5 @@ CREATE TABLE employee(
 
 INSERT INTO department (name) values ('Human');
 INSERT INTO department (name) values ('Brainstorming');
-INSERT INTO role (title, salary) values ('Thinker', 5 );  
-INSERT INTO role (title, salary) values ('brain', 7 );  
+INSERT INTO role (title, salary) values ('Thinker', 4 );  
+INSERT INTO role (title, salary) values ('brain',9 );  
