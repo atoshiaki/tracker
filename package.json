@@ -1,29 +1,24 @@
 {
-    "name": "employeetracker",
+    "name": "tracker",
     "version": "1.0.0",
     "description": "",
     "main": "script.js",
     "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
-      "type": "git",
-      "url": "git+https://github.com/korynelson/employeeTracker.git"
+        "type": "git",
+        "url": "git+https://github.com/atoshiaki/tracker.git"
     },
-    "author": "",
+    "author": "Atoshiaki",
     "license": "ISC",
     "bugs": {
-      "url": "https://github.com/korynelson/employeeTracker/issues"
+        "url": "https://github.com/atoshiaki/tracker/issues"
     },
-    "homepage": "https://github.com/korynelson/employeeTracker#readme",
+    "homepage": "https://github.com/atoshiaki/tracker#readme",
     "dependencies": {
-      "console.table": "^0.10.0",
-      "inquirer": "^7.3.3",
-      "mysql": "^2.18.1"
-    },
-    "devDependencies": {
-      "eslint": "^7.11.0",
-      "eslint-config-airbnb-base": "^14.2.0",
-      "eslint-plugin-import": "^2.22.1"
+        "console.table": "^0.10.0",
+        "inquirer": "^7.3.3",
+        "mysql": "^2.18.1"
     }
-  }
+}
