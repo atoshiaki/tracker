@@ -234,3 +234,124 @@ const addFunction = () => {
           }
       });
 }
+
+const addDepartment = () => {
+  inquirer
+      .prompt({
+          name: 'name',
+          type: 'input',
+          message: 'deparment name'
+      })
+      .then((input) => {
+          db.query(`
+              INSERT INTO department (name)
+              VALUES (?)
+              `, input.name ,function(err, res) {
+              if(err) throw err;
+              console.log('add department successed');
+              mainOption();
+          });
+      });
+}
+
+const addRole = () => {
+  db.query(`SELECT * FROM department`,
+      function(err, res) {
+          if(err) throw err;
+          inquirer
+              .prompt([
+                  {
+                      name: 'title',
+                      type: 'input',
+                      message: 'role title'
+                  },
+                  {
+                      name: 'salary',
+                      type: 'number',
+                      message: 'role salary'
+                  },
+                  {
+                      name: 'department_name',
+                      type: 'rawlist',
+                      message: 'department',
+                      choices: () => {
+                          const list = [];
+                          for(let i = 0; i < res.length; i++) {
+                              list.push(res[i].name);
+                          }
+                          return list;
+                          }
+                  }
+              ])
+              .then((answer) => {
+                  const department_id = findId(answer.department_name, res);
+                  db.query(`
+                      INSERT INTO role (title, salary, department_id)
+                      VALUES(?,?,?)
+                      `,[answer.title, answer.salary, department_id],
+                      function(err, res) {
+                          if(err) throw err;
+                          console.log('added Role: ' + JSON.stringify(answer));
+                      });
+                      mainOption();
+              })
+              .catch(err => err);
+          });
+}
+
+const addEmployee = () =>{
+  findRole();
+  findEmployee();
+  inquirer
+      .prompt([
+          {
+              name: 'first_name',
+              type: 'input',
+              message: 'Employee\'s first name'
+          },
+          {
+              name: 'last_name',
+              type: 'input',
+              message: 'Employee\'s last name'
+          },
+          {
+              name: 'role',
+              type: 'rawlist',
+              message: 'employee role',
+              choices: () => {
+                  const list = [];
+                  for(let i = 0; i < roleObj.length; i++) {
+                      list.push(roleObj[i].name);
+                      // console.log(list);
+                  }
+                  return list;
+              }
+          },
+          {
+              name: 'manager',
+              type: 'rawlist',
+              message: 'employee manager',
+              choices: () => {
+                  employeeObj.push('null');
+                  const list = [];
+                  for(let i = 0; i < employeeObj.length; i++) {
+                      list.push(employeeObj[i]);
+                  }
+                  return list;
+              }
+          }
+      ])
+      .then((answer) => {
+          const role_id = findId(answer.role, roleObj);
+          const manager_id = findId(answer.manager, employeeObj);
+          db.query(`
+              INSERT INTO employee (first_name, last_name, role_id, manager_id)
+              VALUES (?, ?, ? , ?)
+              `,[answer.first_name ,answer.last_name ,role_id , manager_id] ,function (err, res) {
+                  if(err) throw err;
+                  console.log('add employee successed');
+                  mainOption();
+              });
+      }).catch(err => err);
+}
+
