@@ -478,3 +478,147 @@ const updateEmployeeManager = () => {
           .catch(err => err);
   });
 }
+
+const deleteFunction = () => {
+  inquirer
+      .prompt({
+          name: 'delete',
+          type: 'list',
+          message: 'Remove data option',
+          choices: ['Department', 'Role', 'Employee', 'Back']
+      })
+      .then((chosen) => {
+          switch(chosen.delete) {
+              case 'Department':
+                  deleteDepartment();
+              break;
+              case 'Role':
+                  deleteRole();
+              break;
+              case 'Employee':
+                  deleteEmployee();
+              break;
+              default:
+                  mainOption();
+          }
+      })
+      .catch((err) => err);
+}
+
+const deleteDepartment = () => {
+  db.query(`SELECT * FROM department`,
+  function(err, res) {
+      if(err) throw err;
+      inquirer
+      .prompt({
+          name: 'name',
+          type: 'rawlist',
+          message: 'Select the department to remove',
+          choices: () => {
+              const list = [];
+              for(let i = 0; i < res.length; i ++) {
+                  list.push(res[i]);
+              }
+              return list;
+          }
+      }).then((chosen) => {
+          const departmentId = findId(chosen.name, res);
+          db.query(`
+              DELETE FROM department WHERE id = ?
+              `,departmentId ,function(err, res) {
+                  if(err) throw err;
+                  console.log('deleted department');
+                  mainOption();
+          });
+      }).catch(err => err);
+  });
+}
+
+const deleteRole = () => {
+  db.query(`SELECT id, title AS 'name' FROM role`,
+      function(err, res){
+          if(err) throw err;
+          inquirer
+              .prompt({
+                  name: 'title',
+                  type: 'rawlist',
+                  message: 'Select role to remove',
+                  choices: async () => {
+                      const list = [];
+                      for(let i = 0; i < res.length; i++) {
+                          list.push(res[i]);
+                      }
+                      return list;
+                  }
+              })
+              .then((chosen) => {
+                  console.log(chosen);
+                  const roleId = findId(chosen.title, res);
+                  console.log(roleId);
+                  db.query(`
+                  DELETE FROM role WHERE id = ?
+                  `,roleId ,function(err, res) {
+                      if(err) throw err;
+                      console.log('deleted role');
+                      mainOption();
+                  });
+              })
+              .catch(err => err);
+      });
+}
+
+const deleteEmployee = () => {
+  db.query(employeeInfo, function(err, res) {
+      if(err) throw err;
+      inquirer
+          .prompt({
+              name: 'name',
+              type: 'rawlist',
+              message: 'Select employee to FIRE!',
+              choices: () => {
+                  const list = [];
+                  for(let i = 0; i < res.length; i++) {
+                      list.push(res[i].name);
+                  }
+                  return list;
+              }
+          }).then((chosen) => {
+              console.log(chosen);
+              const employeeId = findId(chosen.name, res);
+              db.query(`
+              DELETE FROM employee WHERE id = ?
+              `,employeeId , function(err, res) {
+                  if(err) throw err;
+                  if(res) console.log(' employee FIRED!');
+                  mainOption();
+              });
+          }).catch((err) => err);
+  });
+}
+
+const findId = (name, idArray) => {
+  for(let i = 0; i < idArray.length ;i++ ) {
+      if(name === idArray[i].name) {
+          return idArray[i].id;
+      }
+  }
+}
+const findRole = () => {
+  db.query(`SELECT id, title AS 'name' FROM role`,
+      function(err, res){
+          if(err) throw err;
+          for(let i = 0; i < res.length ;i++) {
+              roleObj.push(res[i]);
+          }
+          return roleObj;
+      });
+}
+const findEmployee = () => {
+  db.query(employeeInfo, function(err, res) {
+      if(err) throw err;
+      for(let i = 0; i< res.length ; i++) {
+          employeeObj.push(res[i]);
+      }
+      return employeeObj;
+  });
+}
