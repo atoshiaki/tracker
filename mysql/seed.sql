@@ -5,7 +5,7 @@ VALUES ('Boss'), ('Marketing'), ('Engineering');
 SELECT * FROM role;
 
 INSERT INTO role (title, salary, department_id)
-VALUES('Boss', 0, 1),  ('Marketing Lead', 100,a2),  ('Lead Engineer',a200, 3);
+VALUES('Boss', 0, 1),  ('Marketing Lead', 100,c2),  ('Lead Engineer',c200, 3);
 
 SELECT
     CONCAT(first_name, ' ', last_name) AS 'name'
@@ -15,7 +15,7 @@ SELECT * FROM employee;
 INSERT INTO employee (first_name, last_name, role_id)
 VALUES('Anthony', 'Di Leonardo', 1);
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ('Robbie', 'Castillo',a2 , 1), ('Ashley', 'Tolbertson', 3, 1);
+VALUES ('Robbie', 'Castillo',c2 , 1), ('Ashley', 'Tolbertson', 3, 1);
 
 SELECT
 	department.name AS 'Department',
@@ -31,12 +31,12 @@ FROM department
 INNER JOIN role ON department.id = role.department_id;
 
 SELECT
-	a1.id AS 'ID',
-	a1.first_name AS 'First Name',
-    a1.last_name AS 'Last Name',
-    CONCAT(a2.first_name, ' ', a2.last_name) AS 'Manager'
-FROM employee a1
-INNER JOIN employee a2 ON a1.manager_id = a2.id;
+	c1.id AS 'ID',
+	c1.first_name AS 'First Name',
+    c1.last_name AS 'Last Name',
+    CONCAT(c2.first_name, ' ', c2.last_name) AS 'Manager'
+FROM employee c1
+INNER JOIN employee c2 ON c1.manager_id = c2.id;
 
 SELECT
 	employee.id AS 'ID',
@@ -55,17 +55,17 @@ SELECT id
     WHERE id = 1;
 
 SELECT
-	a1.id AS 'ID',
-	a1.first_name AS 'First Name',
-    a1.last_name AS 'Last Name',
+	c1.id AS 'ID',
+	c1.first_name AS 'First Name',
+    c1.last_name AS 'Last Name',
 	department.name AS 'Department',
     role.title AS 'Role',
     role.salary AS 'Salary',
-	CONCAT(a2.first_name, ' ', a2.last_name) AS 'Manager'
+	CONCAT(c2.first_name, ' ', c2.last_name) AS 'Manager'
 FROM department
 INNER JOIN role ON department.id = role.department_id
-INNER JOIN employee a1 ON role.id = a1.role_id
-LEFT JOIN employee a2 ON a1.manager_id = a2.id;
+INNER JOIN employee c1 ON role.id = c1.role_id
+LEFT JOIN employee c2 ON c1.manager_id = c2.id;
 
 SELECT
 	*
@@ -76,18 +76,18 @@ SELECT * FROM role;
 DELETE FROM role WHERE id = 9;
 
 SELECT
-	a1.id AS 'ID',
-	a1.first_name AS 'First Name',
-    a1.last_name AS 'Last Name',
+	c1.id AS 'ID',
+	c1.first_name AS 'First Name',
+    c1.last_name AS 'Last Name',
 	department.name AS 'Department',
     role.title AS 'Role',
     role.salary AS 'Salary',
-	CONCAT(a2.first_name, ' ', a2.last_name) AS 'Manager'
+	CONCAT(c2.first_name, ' ', c2.last_name) AS 'Manager'
 FROM department
 INNER JOIN role ON department.id = role.department_id
-LEFT JOIN employee a1 ON role.id = a1.role_id
-LEFT JOIN employee a2 ON a1.manager_id = a2.id
-WHERE department.id =a2;
+LEFT JOIN employee c1 ON role.id = c1.role_id
+LEFT JOIN employee c2 ON c1.manager_id = c2.id
+WHERE department.id =c2;
 
 SELECT SUM(role.salary) FROM role;
 
@@ -96,8 +96,8 @@ SELECT
     SUM(role.salary) AS 'Department Budget'
 FROM department
 INNER JOIN role ON department.id = role.department_id
-LEFT JOIN employee a1 ON role.id = a1.role_id
-LEFT JOIN employee a2 ON a1.manager_id = a2.id
+LEFT JOIN employee c1 ON role.id = c1.role_id
+LEFT JOIN employee c2 ON c1.manager_id = c2.id
 GROUP BY department.id;
 
 SELECT
@@ -107,13 +107,13 @@ INNER JOIN department ON department.id = role.department_id
 LEFT JOIN employee ON role.id = employee.role_id;
 
 UPDATE employee
-SET role_id =a2,
+SET role_id =c2,
 	manager_id = 1
-WHERE id =a2;
+WHERE id =c2;
 
-DELETE FROM employee WHERE id =a2;
-DELETE FROM role WHERE id =a2;
-DELETE FROM department WHERE id =a2;
+DELETE FROM employee WHERE id =c2;
+DELETE FROM role WHERE id =c2;
+DELETE FROM department WHERE id =c2;
 
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
 
