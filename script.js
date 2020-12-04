@@ -355,3 +355,126 @@ const addEmployee = () =>{
       }).catch(err => err);
 }
 
+const updateFunction = () => {
+  inquirer
+      .prompt({
+          name: 'update',
+          type: 'list',
+          message: 'Update Employee option',
+          choices: ['Employee Role', 'Employee Manager', 'Back']
+      })
+      .then((chosen) => {
+          switch(chosen.update) {
+              case 'Employee Role':
+                  updateEmployeeRole();
+              break;
+              case 'Employee Manager':
+                  updateEmployeeManager();
+              break;
+              default:
+                  mainOption();
+          }
+      })
+      .catch(err => err);
+}
+const updateEmployeeRole = () => {
+  db.query(employeeInfo, function(err, res) {
+      if(err) throw err;
+      inquirer
+          .prompt({
+              name: 'employee',
+              type: 'rawlist',
+              message: 'choose employee to update role',
+              choices: () => {
+                  const list = [];
+                  for(let i = 0; i < res.length; i++) {
+                      list.push(res[i]);
+                  }
+                  return list;
+              }
+          })
+          .then((chosen) => {
+              const employeeId = findId(chosen.employee, res);
+              db.query(`SELECT id, title AS 'name' FROM role`, function(err, res) {
+                  if(err) throw err;
+                  inquirer
+                      .prompt({
+                          name: 'role',
+                          type: 'rawlist',
+                          message: 'choose role to update',
+                          choices: () => {
+                              const list = [];
+                              for(let i = 0; i < res.length; i++) {
+                                  list.push(res[i]);
+                              }
+                              return list;
+                          }
+                      }).then((chosen) => {
+                          console.log(chosen);
+                          const roleId = findId(chosen.role, res);
+                          console.log(roleId);
+                              db.query(`
+                                  UPDATE employee
+                                  SET role_id = ?
+                                  WHERE id = ?;
+                                  `, [roleId ,employeeId], function(err, res) {
+                                      if(err) throw err;
+                                      console.log('updated employee');
+                                      mainOption();
+                              })
+                      }).catch(err => err);
+              });
+          })
+          .catch(err => err);
+  });
+}
+
+const updateEmployeeManager = () => {
+  db.query(employeeInfo, function(err, res) {
+      if(err) throw err;
+      inquirer
+          .prompt({
+              name: 'employee',
+              type: 'rawlist',
+              message: 'Please choose an employee to update their info as manager',
+              choices: () => {
+                  const list = [];
+                  for(let i = 0; i < res.length; i++) {
+                      list.push(res[i]);
+                  }
+                  return list;
+              }
+          })
+          .then((chosen) => {
+              const employeeId = findId(chosen.employee, res);
+              db.query(employeeInfo, function(err, res) {
+                  if(err) throw err;
+                  inquirer
+                      .prompt({
+                          name: 'manager',
+                          type: 'rawlist',
+                          message: 'Please choose a manager to update their info',
+                          choices: () => {
+                              const list = [];
+                              for(let i = 0; i < res.length; i++) {
+                                  list.push(res[i]);
+                              }
+                              return list;
+                          }
+                      }).then((chosen) => {
+                          const managerId = findId(chosen.manager, res);
+                              db.query(`
+                                  UPDATE employee
+                                  SET manager_id = ?
+                                  WHERE id = ?;
+                                  `, [managerId ,employeeId], function(err, res) {
+                                      if(err) throw err;
+                                      console.log('updated employee');
+                                      mainOption();
+                              })
+                      }).catch(err => err);
+              });
+          })
+          .catch(err => err);
+  });
+}
